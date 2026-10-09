@@ -42,7 +42,7 @@ pipeline {
         stage('Docker Test Image') {
             steps {
                 sh 'docker build --target test --tag aceest:test .'
-                sh 'docker run --rm aceest:test'
+                sh 'docker run --rm -e COVERAGE_FILE=/tmp/.coverage aceest:test'
             }
         }
 
