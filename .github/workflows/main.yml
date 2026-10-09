@@ -1,0 +1,71 @@
+name: ACEest CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      # Get the source code
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      # Configure Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # Install test and development dependencies
+      - name: Install dependencies
+        run: python -m pip install --requirement requirements-dev.txt
+
+      # Check Python syntax
+      - name: Build and syntax check
+        run: python -m compileall -q app.py aceest tests
+
+      # Run lint checks
+      - name: Lint
+        run: ruff check .
+
+      # Run tests directly on the GitHub Actions runner
+      - name: Run host tests
+        run: pytest
+
+      # Build the Docker image for testing
+      - name: Build test image
+        run: docker build --target test -t aceest:test .
+
+      # Run tests inside Docker; save coverage data to a writable location
+      - name: Run container tests
+        run: docker run --rm -e COVERAGE_FILE=/tmp/.coverage aceest:test
+
+      # Build the production/runtime image
+      - name: Build runtime image
+        run: docker build --target runtime --tag aceest:${{ github.sha }} .
+
+      # Start the application and verify its health endpoint
+      - name: Smoke test runtime container
+        run: |
+          docker run --detach --rm --name aceest-ci --publish 8000:8000 aceest:${{ github.sha }}
+          for attempt in 1 2 3 4 5; do
+            if curl --fail --silent http://127.0.0.1:8000/health; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs aceest-ci
+          exit 1
+
+      # Stop the container even if the smoke test fails
+      - name: Stop smoke-test container
+        if: always()
+        run: docker stop aceest-ci || true
