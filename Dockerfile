@@ -1,3 +1,4 @@
+
 # syntax=docker/dockerfile:1
 
 FROM python:3.12-slim AS base
@@ -22,6 +23,9 @@ USER root
 COPY requirements-dev.txt pyproject.toml ./
 RUN pip install --no-cache-dir --requirement requirements-dev.txt
 COPY --chown=aceest:aceest tests ./tests
+
+ENV COVERAGE_FILE=/tmp/.coverage
+
 USER aceest
 
 CMD ["pytest"]
