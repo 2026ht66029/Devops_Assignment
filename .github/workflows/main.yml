@@ -34,8 +34,8 @@ jobs:
       - name: Run host tests
         run: pytest
 
-      - name: Build test image
-        run: docker build --target test --tag aceest:test .
+      - name: Run container tests
+        run: docker run --rm -e COVERAGE_FILE=/tmp/.coverage aceest:test
 
       - name: Run tests inside container
         run: docker run --rm aceest:test
