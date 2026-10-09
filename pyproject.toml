@@ -4,7 +4,6 @@ testpaths = ["tests"]
 pythonpath = ["."]
 # Explicitly set the coverage database location.
 # pytest-cov will use this path when saving coverage data.
-cov_datafile = "/tmp/coverage/.coverage"
 
 [tool.coverage.run]
 data_file = "/tmp/coverage/.coverage"
