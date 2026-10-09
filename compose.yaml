@@ -1,0 +1,9 @@
+services:
+  web:
+    build:
+      context: .
+      target: runtime
+    image: aceest-fitness:local
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
