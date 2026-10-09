@@ -2,6 +2,11 @@
 addopts = "-q --cov=aceest --cov-report=term-missing --cov-fail-under=90"
 testpaths = ["tests"]
 pythonpath = ["."]
+# Explicitly set the coverage database location.
+# pytest-cov will use this path when saving coverage data.
+
+[tool.coverage.run]
+data_file = "/tmp/coverage/.coverage"
 
 [tool.ruff]
 line-length = 100
