@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ACEest Fitness and Gym</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; }
+    body { margin: 0; background: #111827; color: #f9fafb; }
+    header { padding: 3rem 8vw; background: linear-gradient(135deg, #0f766e, #1d4ed8); }
+    main { max-width: 1050px; margin: auto; padding: 2rem 8vw 4rem; }
+    h1, h2 { margin-top: 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .card { background: #1f2937; border: 1px solid #374151; border-radius: 12px; padding: 1rem; }
+    code { color: #93c5fd; }
+    footer { padding: 1.5rem 8vw; border-top: 1px solid #374151; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ACEest Fitness and Gym</h1>
+    <p>A small Flask service built for a complete DevOps CI/CD demonstration.</p>
+  </header>
+  <main>
+    <h2>Training programs</h2>
+    <div class="grid">
+      {% for key, program in programs.items() %}
+      <article class="card">
+        <h3>{{ program.name }}</h3>
+        <p>{{ program.sessions_per_week }} sessions per week</p>
+        <p><code>GET /api/programs/{{ key }}</code></p>
+      </article>
+      {% endfor %}
+    </div>
+
+    <h2 style="margin-top: 2rem">Weekly classes</h2>
+    <div class="grid">
+      {% for item in weekly_classes %}
+      <article class="card">
+        <strong>{{ item.day }} at {{ item.time }}</strong>
+        <p>{{ item.name }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </main>
+  <footer>Health check: <code>GET /health</code> | BMI API: <code>POST /api/bmi</code></footer>
+</body>
+</html>
